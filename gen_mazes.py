@@ -2,7 +2,7 @@ from random import sample
 from collections import OrderedDict
 import os
 
-from mazeexplorer_modified.mazeexplorer import MazeExplorer
+from mazeenv.mazeexplorer import MazeExplorer
 
 
 class GenMazesParams:

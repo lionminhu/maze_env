@@ -4,7 +4,7 @@ import time
 import logging
 import random
 
-from mazeexplorer_modified.mazeexplorer import MazeExplorer
+from mazeenv.mazeexplorer import MazeExplorer
 from vizdoom import GameVariable
 from gen_mazes import GenMazesParams
 
