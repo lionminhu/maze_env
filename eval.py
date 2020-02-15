@@ -6,16 +6,14 @@ import random
 
 from mazeenv.mazeexplorer import MazeExplorer
 from vizdoom import GameVariable
-from gen_mazes import GenMazesParams
+from params import params
 
-
-gen_mazes_params = GenMazesParams()
 
 actions = list(range(3))  # MOVE_FORWARD TURN_LEFT TURN_RIGHT
-targets = list(gen_mazes_params.key_categories.keys())
+targets = list(params.key_categories.keys())
 
 
-def test(rank, params, train_set=True):
+def test(rank, train_set=True):
     if not os.path.exists('./log'):
         os.mkdir('./log')
     logging.basicConfig(filename='./log/'+params.log_file+'.log', level=logging.INFO)
@@ -23,11 +21,11 @@ def test(rank, params, train_set=True):
     # gpu_id = params.gpu_ids_test[rank % len(params.gpu_ids_test)]
 
     maze_id = rank
-    maze_path = gen_mazes_params.mazes_path_root + str(maze_id)
+    maze_path = params.mazes_path_root + str(maze_id)
 
     env = MazeExplorer.load_vizdoom_env(maze_path, 1,
-                                        gen_mazes_params.action_frame_repeat,
-                                        gen_mazes_params.scaled_resolution)
+                                        params.action_frame_repeat,
+                                        params.scaled_resolution)
 
     start_time = time.time()
 

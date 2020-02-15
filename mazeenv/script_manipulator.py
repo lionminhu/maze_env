@@ -34,15 +34,37 @@ def write_config(wad, actions, episode_timeout):
 def sample_key_textures(categories):
     key_texture_list = []
     for category in categories.values():
-        key_texture_list += random.sample(category, 1)
+        key_texture_list.append(str(random.randrange(len(category))))
     return key_texture_list
 
 
-def write_acs(random_spawn, random_textures, random_key_positions, map_size, number_maps,
-              floor_texture, ceilling_texture, wall_texture, key_categories, seed=None):
+def format_key_textures(categories):
+    max_category_size = -1
+    for category in categories.values():
+        max_category_size = max(max_category_size, len(category))
+    ret = '{'
+    for cat_idx, category in enumerate(categories.values()):
+        ret += '{'
+        for text_idx in range(max_category_size):
+            if text_idx <= len(category) - 1:
+                ret += '"{}"'.format(category[text_idx])
+            else:
+                ret += '"NONE"'
+            if text_idx != max_category_size - 1:
+                ret += ','
+        ret += '}'
+        if cat_idx != len(categories) - 1:
+            ret += ','
+    ret += '}'
+    return ret, max_category_size
+
+
+def write_acs(random_player_spawn, random_textures, random_key_positions, map_size, number_maps,
+              floor_texture, ceilling_texture, wall_texture, key_categories,
+              random_key_textures, seed=None):
     """
     args:
-    random_spawn: (bool) whether or not agent should be randomly placed in maze at spawn time
+    random_player_spawn: (bool) whether or not agent should be randomly placed in maze at spawn time
     random_textures: (bool) whether or not textures (walls, floors etc.) should be randomised.
     """
     BLOCK_SIZE = 96
@@ -68,10 +90,14 @@ def write_acs(random_spawn, random_textures, random_key_positions, map_size, num
         doom_textures = textures.read().replace(';\n', '')
         num_textures = len(doom_textures.split(','))
 
-    key_texture_list = sample_key_textures(key_categories)
-    print('keys used: {}'.format(key_texture_list))
-    key_obj_textures = '{"' + '","'.join(key_texture_list) + '"};'
-    num_keys = len(key_texture_list)
+
+    num_keys = len(key_categories)
+
+    sampled_key_textures = sample_key_textures(key_categories)
+    default_key_textures = '{' + ','.join(sampled_key_textures) + '}'
+    
+    key_textures, max_category_size = format_key_textures(key_categories)
+    num_key_textures = '{' + ','.join([str(len(c)) for c in key_categories.values()]) + '}'
 
     # number_key_positions = keys * number_maps
 
@@ -88,7 +114,7 @@ def write_acs(random_spawn, random_textures, random_key_positions, map_size, num
     spawns_angle = ", ".join(['%.2f' % (random.random()) for _ in range(number_maps)])
 
     d = {
-        'number_keys': num_keys, 'random_spawn': random_spawn, 'random_textures': random_textures,
+        'number_keys': num_keys, 'random_spawn': random_player_spawn, 'random_textures': random_textures,
         'textures': doom_textures, 'num_textures': num_textures, 'xmin': xmin, 'ymin': ymin, 'xmax': xmax, 'ymax': ymax,
         'floor_texture': floor_texture, 'ceilling_texture': ceilling_texture, 'wall_texture': wall_texture,
         'random_key_positions': random_key_positions,
@@ -96,7 +122,9 @@ def write_acs(random_spawn, random_textures, random_key_positions, map_size, num
         'spawns_offset_x': spawns_offset_x, 'spawns_offset_y': spawns_offset_y, 'spawns_angle': spawns_angle,
         'keys_spawn': keys_spawn, 'keys_spawn_offset_x': keys_spawn_offset_x,
         'keys_spawn_offset_y': keys_spawn_offset_y, 'number_keys_maps': num_keys,
-        'key_obj_textures': key_obj_textures,
+        'random_key_textures': random_key_textures, 'num_key_textures': num_key_textures,
+        'max_category_size': max_category_size, 'key_textures': key_textures,
+        'default_key_textures': default_key_textures,
     }
 
     # do the substitution

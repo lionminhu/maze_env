@@ -16,7 +16,7 @@ pip3 install setproctitle
 python gen_mazes.py
 ```
 
-4. `main.py` runs the random agent with multiprocessing. Prior to running `main.py`, the `log_file` of `class Params` must be changed to a nonexisting file name. The raw data will be saved to the CSV file of the specified `log_file` path.
+4. `main.py` runs the random agent with multiprocessing. Prior to running `main.py`, the `log_file` of `class Params` in `params.py` must be changed to a nonexisting file name. The raw data will be saved to the CSV file of the specified `log_file` path.
 ```
 python main.py
 ```

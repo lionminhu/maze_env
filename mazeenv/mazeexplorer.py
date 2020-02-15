@@ -12,7 +12,7 @@ import cv2
 
 from mazeexplorer.maze import generate_mazes
 from .script_manipulator import write_config, write_acs
-from mazeexplorer.vizdoom_gym import VizDoom
+from .vizdoom_gym import VizDoom
 from mazeexplorer.wad import generate_wads
 from .compile_acs import compile_acs
 
@@ -25,7 +25,7 @@ class MazeExplorer(VizDoom):
                  floor_texture="CEIL5_2", ceilling_texture="CEIL5_1", wall_texture="STONE2",
                  action_frame_repeat=4, actions="MOVE_FORWARD TURN_LEFT TURN_RIGHT", scaled_resolution=(42, 42),
                  episode_timeout=1500, complexity=.7, density=.7, data_augmentation=False, mazes_path=None,
-                 key_categories=None):
+                 key_categories=None, random_key_textures=False):
         """
         Gym environment where the goal is to collect a preset number of keys within a procedurally generated maze.
         MazeExplorer is a customisable 3D benchmark for assessing generalisation in Reinforcement Learning.
@@ -72,6 +72,7 @@ class MazeExplorer(VizDoom):
         self.key_categories = key_categories
         if self.key_categories is None:
             raise ValueError("Must provide key texture categories")
+        self.random_key_textures = random_key_textures
 
         # The mazeexplorer textures to use if random textures is set to False
         self.wall_texture = wall_texture
@@ -105,7 +106,9 @@ class MazeExplorer(VizDoom):
                   floor_texture=self.floor_texture,
                   ceilling_texture=self.ceilling_texture,
                   wall_texture=self.wall_texture,
-                  key_categories=self.key_categories, seed=self.seed)
+                  key_categories=self.key_categories,
+                  random_key_textures=self.random_key_textures,
+                  seed=self.seed)
 
         compile_acs(self.mazes_path)
 

@@ -22,14 +22,18 @@ global int 5:key_obj_idx;
 int number_keys = $number_keys;
 bool random_spawn = $random_spawn;
 bool random_textures = $random_textures;
-bool random_keys = $random_key_positions;
+bool random_key_positions = $random_key_positions;
 int xmin = $xmin;
 int ymin = $ymin;
 int xmax = $xmax;
 int ymax = $ymax;
 int offset = 48.0;
 
-int key_obj_textures[ $number_keys ] = $key_obj_textures
+bool random_key_textures = $random_key_textures;
+int num_key_textures[ $number_keys ] = $num_key_textures;
+str key_textures[ $number_keys ][ $max_category_size ] = $key_textures;
+int curr_key_textures[ $number_keys ];
+int default_key_textures[ $number_keys ] = $default_key_textures;
 
 str floor_texture = "$floor_texture";
 str ceilling_texture = "$ceilling_texture";
@@ -121,18 +125,33 @@ script 2 ENTER
 
     key_obj_idx = Random(0, number_keys - 1);
 
-    if (random_keys)
+    if (random_key_textures)
     {
-        for (int i=0; i<number_keys; i++)
+        for (int i = 0; i < number_keys; i++)
         {
-            SpawnKeyRandom(key_obj_textures[i], (i == key_obj_idx));
+            curr_key_textures[i] = Random(0, num_key_textures[i] - 1);
         }
     }
     else
     {
-        for (int j=0; j<number_keys; j++)
+        for (i = 0; i < number_keys; i++)
         {
-            SpawnKey(j, key_obj_textures[j], (j == key_obj_idx));
+            curr_key_textures[i] = default_key_textures[i];
+        }
+    }
+
+    if (random_key_positions)
+    {
+        for (i = 0; i < number_keys; i++)
+        {
+            SpawnKeyRandom(key_textures[i][curr_key_textures[i]], (i == key_obj_idx));
+        }
+    }
+    else
+    {
+        for (int j = 0; j < number_keys; j++)
+        {
+            SpawnKey(j, key_textures[i][curr_key_textures[j]], (j == key_obj_idx));
         }
     }
     reward = 0.0;
@@ -150,7 +169,6 @@ script 2 ENTER
 
     if (random_spawn)
     {
-
         TARGET_ID_END = TARGET_ID_START;
         while(IsTIDUsed(TARGET_ID_END + 1))
         {
