@@ -23,4 +23,6 @@ python main.py
 
 ## References
 
-The MazeExplorer code and scripts are modified versions of `microsoft/MazeExplorer` repository ([link](https://github.com/microsoft/MazeExplorer)).
+Significant portion of environment code and scripts under `mazeenv` directory are modified versions of `microsoft/MazeExplorer` repository ([link](https://github.com/microsoft/MazeExplorer)). The copyright notice is included in `NOTICE`.
+
+`main.py` and `eval.py` are modified versions of the corresponding scripts in the `kibeomKim/House3D_baseline` repository ([link](https://github.com/kibeomKim/House3D_baseline)).
